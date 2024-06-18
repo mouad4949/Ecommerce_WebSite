@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{product.name}}{% endblock %}
+
+{% block body %}
+{%  if not is_granted('ROLE_ADMIN') %}
+<ul class="nav justify-content-center" style="margin-top:20px;font-size: larger;">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Nike Store</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{path('home')}}">Home</a>
+  </li>
+ 
+  <li class="nav-item">
+    <a class="nav-link active" href="{{path('user_order_list')}}" aria-disabled="true">Orders</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Account
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      {% if not app.user %}
+         <a class="dropdown-item" href="{{path('app_register')}}">Sign up</a>
+         <a class="dropdown-item" href="{{path('app_login')}}">Sign in</a>
+      {% else %}
+        <a class="dropdown-item" href="#">{{app.user.email}}</a>
+        <a class="dropdown-item" href="{{path('app_logout')}}">Lougout</a>
+      {% endif %}
+    </div>
+  </li>
+  </ul>
+      {% else %}
+      <ul class="nav justify-content-center" style="margin-top:20px;font-size: larger;">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Nike Store</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{path('home')}}">Home</a>
+  </li>
+ 
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Account
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#">{{app.user.email}}</a>
+        <a class="dropdown-item" href="{{path('app_logout')}}">Lougout</a>
+    </div>
+  </li>
+    <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Admin
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{path('product_list')}}">Products</a>
+                    <a class="dropdown-item" href="{{path('product_store')}}">Create Product</a>
+                    <a class="dropdown-item" href="{{path('orders_list')}}">Orders</a>
+          </div>
+    </li>
+    </ul>
+      {% endif %}
+
+{#////////////////////////////////////////////////////////////#}
+<section>
+      <div class="row gap-3">
+      
+        {% if  product %}
+             
+            <div class="card mb-3" style="max-width: 600px;margin-left:350px;margin-top:100px">
+            {%  if not is_granted('ROLE_ADMIN') %}
+            <a href="{{path('order_store',{id : product.id})}}" class="btn btn-sm btn-outline-dark">Order now</a>
+              {% endif %}
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <img src="{{asset('uploads/'~product.image)}}" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">{{product.name}}</h5>
+                    <p class="card-text">{{product.description}}.</p>
+                    <h5> <span class="text text-danger">{{product.prix}}</span>  DH</h5>
+                     <h5> <span class="text text-succes">{{product.categories.name}}</span></h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+        {% else %}
+          <div class="alert alert-info">
+            NO Product..
+          </div>
+          
+        {% endif %}
+        
+      </div>
+  </div>
+</section>
+{% endblock %}

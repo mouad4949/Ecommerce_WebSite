@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<ul class="nav justify-content-center" style="margin-top:20px;font-size: larger;">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Nike Store</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{path('home')}}">Home</a>
+  </li>
+ 
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Account
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#">{{app.user.email}}</a>
+        <a class="dropdown-item" href="{{path('app_logout')}}">Lougout</a>
+    </div>
+  </li>
+    <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Admin
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{path('product_list')}}">Products</a>
+                    <a class="dropdown-item" href="{{path('product_store')}}">Create Product</a>
+                    <a class="dropdown-item" href="{{path('orders_list')}}">Orders</a>
+          </div>
+    </li>
+    </ul>
+
+<div class="row my-5">
+        <div class="col-md-10 mx-auto">
+             {%for message in app.flashes('success')%}
+             <div class="alert alert-success">
+               {{message}}
+             </div>
+            {% endfor %}
+            <div class="card">
+                <div class="card-header">
+                       Orders List
+                </div>
+               <div class="card-body">
+                <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                    </tr>
+                </thead> 
+            <tbody>
+                
+                {% for order in orders %}
+                <tr>
+
+                    <td>{{loop.index}}</td>
+                    <td>{{order.pname}}</td>
+                    <td>{{order.price}}</td>
+                    <td>
+                        <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {{order.statut}}
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="{{path('order_status_update',{id :order.id,status: 'shipped'})}}">Shipped</a></li>
+                                </ul>
+                        </div>
+                    </td>
+                    <td>
+                        <form id="{{order.id}}" action="{{path('order_delete',{id:order.id})}}" method="post"></form>
+                        <button onclick="deleteItem('{{order.id}}')" class="btn btn-sm btn-danger"> delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+        </div> 
+            </div>
+        </div>
+</div>
+
+
+{% endblock %}

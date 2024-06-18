@@ -1,0 +1,412 @@
+{% extends 'base.html.twig' %}
+{% block title %}{% endblock %}
+{% block stylesheets %}
+<link
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('assets/css/style_home.css')}}">
+{% endblock %}
+{# {% block javascripts %}<script src="{{asset('assets/js/app.js')}}"defer></script>{% endblock %} #}
+{% block body %}
+
+<nav id="nav">
+        <div class="navTop">
+            <div class="navItem">
+                <img src="{{asset('assets/img/sneakers.png')}}" alt="">
+            </div>
+            <div class="navItem">
+                <div class="search">
+                    <input type="text" placeholder="Search..." class="searchInput">
+                    <img src="{{asset('assets/img/search.png')}}" width="20" height="20" alt="" class="searchIcon">
+                </div>
+            </div>
+            <div class="navItem">
+                <span class="limitedOffer">Limited Offer!</span>
+            </div>
+        </div>
+        <div class="navBottom">
+       {% for category in categories %}
+            <a href ="{{path('product_category',{id: category.id})}}" class="menuItem" style="margin-top:30px;text-decoration:none">{{ category.name }}</a>
+      {% endfor %}
+           <a href ="{{path('home')}}" class="menuItem" style="margin-top:30px;text-decoration:none">All</a>
+        </div>
+  
+</nav>   
+ {%  if not is_granted('ROLE_ADMIN') %}
+<ul class="nav justify-content-center" style="margin-top:20px;font-size: larger;">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Nike Store</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{path('home')}}">Home</a>
+  </li>
+ 
+  <li class="nav-item">
+    <a class="nav-link active" href="{{path('user_order_list')}}" aria-disabled="true">Orders</a>
+  </li>
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Account
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      {% if not app.user %}
+         <a class="dropdown-item" href="{{path('app_register')}}">Sign up</a>
+         <a class="dropdown-item" href="{{path('app_login')}}">Sign in</a>
+      {% else %}
+        <a class="dropdown-item" href="#">{{app.user.email}}</a>
+        <a class="dropdown-item" href="{{path('app_logout')}}">Lougout</a>
+      {% endif %}
+    </div>
+  </li>
+  </ul>
+      {% else %}
+      <ul class="nav justify-content-center" style="margin-top:20px;font-size: larger;">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Nike Store</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{path('home')}}">Home</a>
+  </li>
+ 
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Account
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#">{{app.user.email}}</a>
+        <a class="dropdown-item" href="{{path('app_logout')}}">Lougout</a>
+    </div>
+  </li>
+    <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Admin
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{path('product_list')}}">Products</a>
+                    <a class="dropdown-item" href="{{path('product_store')}}">Create Product</a>
+                    <a class="dropdown-item" href="{{path('orders_list')}}">Orders</a>
+          </div>
+    </li>
+    </ul>
+      {% endif %}
+
+{#////////////////////////////////////////////////////////////#}
+<section>
+      <div class="row gap-3">
+        {% if  products | length  %}
+          {% for product in products %}
+            <div class="card mb-3" style="max-width: 350px;margin:40px">
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <img src="{{asset('uploads/'~product.image)}}" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">{{product.name}}</h5>
+                    <p class="card-text">{{product.description}}.</p>
+                    <h5> <span class="text text-danger">{{product.prix}}</span>  $$</h5>
+                    {%  if not is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('product_show',{id: product.id}) }}" class="btn btn-primary">show</a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% endfor %}
+        {% else %}          
+          <div class="alert alert-info">
+            NO Product..
+          </div>
+          
+        {% endif %}
+        
+      </div>
+  </div>
+</section>
+
+
+
+  
+
+  {# ///////////////////////////////////////////////////////////////////////// #}
+   
+    <div class="features">
+        <div class="feature">
+            <img src="{{asset('assets/img/shipping.png')}}" alt="" class="featureIcon">
+            <span class="featureTitle">FREE SHIPPING</span>
+            <span class="featureDesc">Free worldwide shipping on all orders.</span>
+        </div>
+        <div class="feature">
+            <img class="featureIcon" src="{{asset('assets/img/return.png')}}" alt="">
+            <span class="featureTitle">30 DAYS RETURN</span>
+            <span class="featureDesc">No question return and easy refund in 14 days.</span>
+        </div>
+        <div class="feature">
+            <img class="featureIcon" src="{{asset('assets/img/gift.png')}}" alt="">
+            <span class="featureTitle">GIFT CARDS</span>
+            <span class="featureDesc">Buy gift cards and use coupon codes easily.</span>
+        </div>
+        <div class="feature">
+            <img class="featureIcon" src="{{asset('assets/img/contact.png')}}" alt="">
+            <span class="featureTitle">CONTACT US!</span>
+            <span class="featureDesc">Keep in touch via email and support system.</span>
+        </div>
+    </div>
+        <div class="payment">
+            <h1 class="payTitle">Personal Information</h1>
+            <label>Name and Surname</label>
+            <input type="text" placeholder="John Doe" class="payInput">
+            <label>Phone Number</label>
+            <input type="text" placeholder="+1 234 5678" class="payInput">
+            <label>Address</label>
+            <input type="text" placeholder="Elton St 21 22-145" class="payInput">
+            <h1 class="payTitle">Card Information</h1>
+            <div class="cardIcons">
+                <img src="{{asset('assets/img/visa.png')}}" width="40" alt="" class="cardIcon">
+                <img src="{{asset('assets/img/master.png')}}" alt="" width="40" class="cardIcon">
+            </div>
+            <input type="password" class="payInput" placeholder="Card Number">
+            <div class="cardInfo">
+                <input type="text" placeholder="mm" class="payInput sm">
+                <input type="text" placeholder="yyyy" class="payInput sm">
+                <input type="text" placeholder="cvv" class="payInput sm">
+            </div>
+            <button class="payButton">Checkout!</button>
+            <span class="close">X</span>
+        </div>
+    </div>
+    <div class="gallery">
+        <div class="galleryItem">
+            <h1 class="galleryTitle">Be Yourself!</h1>
+            <img src="https://images.pexels.com/photos/9295809/pexels-photo-9295809.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                alt="" class="galleryImg">
+        </div>
+        <div class="galleryItem">
+            <img src="https://images.pexels.com/photos/1040427/pexels-photo-1040427.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                alt="" class="galleryImg">
+            <h1 class="galleryTitle">This is the First Day of Your New Life</h1>
+        </div>
+        <div class="galleryItem">
+            <h1 class="galleryTitle">Just Do it!</h1>
+            <img src="https://images.pexels.com/photos/7856965/pexels-photo-7856965.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                alt="" class="galleryImg">
+        </div>
+    </div>
+    <div class="newSeason">
+        <div class="nsItem">
+            <img src="https://images.pexels.com/photos/4753986/pexels-photo-4753986.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                alt="" class="nsImg">
+        </div>
+        <div class="nsItem">
+            <h3 class="nsTitleSm">WINTER NEW ARRIVALS</h3>
+            <h1 class="nsTitle">New Season</h1>
+            <h1 class="nsTitle">New Collection</h1>
+            <a href="#nav">
+                <button class="nsButton">CHOOSE YOUR STYLE</button>
+            </a>
+        </div>
+        <div class="nsItem">
+            <img src="https://images.pexels.com/photos/7856965/pexels-photo-7856965.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
+                alt="" class="nsImg">
+        </div>
+    </div>
+    <footer>
+        <div class="footerLeft">
+            <div class="footerMenu">
+                <h1 class="fMenuTitle">About Us</h1>
+                <ul class="fList">
+                    <li class="fListItem">Company</li>
+                    <li class="fListItem">Contact</li>
+                    <li class="fListItem">Careers</li>
+                    <li class="fListItem">Affiliates</li>
+                    <li class="fListItem">Stores</li>
+                </ul>
+            </div>
+            <div class="footerMenu">
+                <h1 class="fMenuTitle">Useful Links</h1>
+                <ul class="fList">
+                    <li class="fListItem">Support</li>
+                    <li class="fListItem">Refund</li>
+                    <li class="fListItem">FAQ</li>
+                    <li class="fListItem">Feedback</li>
+                    <li class="fListItem">Stories</li>
+                </ul>
+            </div>
+            <div class="footerMenu">
+                <h1 class="fMenuTitle">Products</h1>
+                <ul class="fList">
+                    <li class="fListItem">Air Force</li>
+                    <li class="fListItem">Air Jordan</li>
+                    <li class="fListItem">Blazer</li>
+                    <li class="fListItem">Crater</li>
+                    <li class="fListItem">Hippie</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footerRight">
+            <div class="footerRightMenu">
+                <h1 class="fMenuTitle">Subscribe to our newsletter</h1>
+                <div class="fMail">
+                    <input type="text" placeholder="your@email.com" class="fInput">
+                    <button class="fButton">Join!</button>
+                </div>
+            </div>
+            <div class="footerRightMenu">
+                <h1 class="fMenuTitle">Follow Us</h1>
+                <div class="fIcons">
+                    <img src="{{asset('assets/img/facebook.png')}}" alt="" class="fIcon">
+                    <img src="{{asset('assets/img/twitter.png')}}" alt="" class="fIcon">
+                    <img src="{{asset('assets/img/instagram.png')}}" alt="" class="fIcon">
+                    <img src="{{asset('assets/img/whatsapp.png')}}" alt="" class="fIcon">
+                </div>
+            </div>
+            <div class="footerRightMenu">
+                <span class="copyright">@Lama Dev. All rights reserved. 2022.</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+    const wrapper = document.querySelector(".sliderWrapper");
+const menuItems = document.querySelectorAll(".menuItem");
+
+const products = [
+  {
+
+    id: 1,
+    title: "Air Force",
+    price: 119,
+    colors: [
+      {
+        code: "black",
+        img: "./img/air.png",
+      },
+      {
+        code: "darkblue",
+        img: "./img/air2.png",
+        
+      },
+    ], 
+  },
+  {
+    id: 2,
+    title: "Air Jordan",
+    price: 149,
+    colors: [
+      {
+        code: "lightgray",
+        img: "./img/jordan.png",
+      },
+      {
+        code: "green",
+        img: "./img/jordan2.png",
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Blazer",
+    price: 109,
+    colors: [
+      {
+        code: "lightgray",
+        img: "./img/blazer.png",
+      },
+      {
+        code: "green",
+        img: "./img/blazer2.png",
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Crater",
+    price: 129,
+    colors: [
+      {
+        code: "black",
+        img: "./img/crater.png",
+      },
+      {
+        code: "lightgray",
+        img: "./img/crater2.png",
+      },
+    ],
+  },
+  {
+    id: 5,
+    title: "Hippie",
+    price: 99,
+    colors: [
+      {
+        code: "gray",
+        img: "./img/hippie.png",
+      },
+      {
+        code: "black",
+        img: "./img/hippie2.png",
+      },
+    ],
+  },
+];
+
+let choosenProduct = products[0];
+
+const currentProductImg = document.querySelector(".productImg");
+const currentProductTitle = document.querySelector(".productTitle");
+const currentProductPrice = document.querySelector(".productPrice");
+const currentProductColors = document.querySelectorAll(".color");
+const currentProductSizes = document.querySelectorAll(".size");
+
+menuItems.forEach((item, index) => {
+  item.addEventListener("click", () => {
+    //change the current slide
+    wrapper.style.transform = `translateX(${-100 * index}vw)`;
+
+    //change the choosen product
+    choosenProduct = products[index];
+
+    //change texts of currentProduct
+    currentProductTitle.textContent = choosenProduct.title;
+    currentProductPrice.textContent = "$" + choosenProduct.price;
+    currentProductImg.src = choosenProduct.colors[0].img;
+
+    //assing new colors
+    currentProductColors.forEach((color, index) => {
+      color.style.backgroundColor = choosenProduct.colors[index].code;
+    });
+  });
+});
+
+currentProductColors.forEach((color, index) => {
+  color.addEventListener("click", () => {
+    currentProductImg.src = choosenProduct.colors[index].img;
+  });
+});
+
+currentProductSizes.forEach((size, index) => {
+  size.addEventListener("click", () => {
+    currentProductSizes.forEach((size) => {
+      size.style.backgroundColor = "white";
+      size.style.color = "black";
+    });
+    size.style.backgroundColor = "black";
+    size.style.color = "white";
+  });
+});
+
+const productButton = document.querySelector(".productButton");
+const payment = document.querySelector(".payment");
+const close = document.querySelector(".close");
+
+productButton.addEventListener("click", () => {
+  payment.style.display = "flex";
+});
+
+close.addEventListener("click", () => {
+  payment.style.display = "none";
+});
+
+    </script>
+{% endblock %}

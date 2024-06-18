@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Update product{% endblock %}
+
+{% block body %}
+<ul class="nav justify-content-center" style="margin-top:20px;font-size: larger;">
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="#">Nike Store</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{{path('home')}}">Home</a>
+  </li>
+ 
+  
+  <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Account
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#">{{app.user.email}}</a>
+        <a class="dropdown-item" href="{{path('app_logout')}}">Lougout</a>
+    </div>
+  </li>
+    <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Admin
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{{path('product_list')}}">Products</a>
+                    <a class="dropdown-item" href="{{path('product_store')}}">Create Product</a>
+                    <a class="dropdown-item" href="{{path('orders_list')}}">Orders</a>
+          </div>
+    </li>
+    </ul>
+    <div class="row my-4">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    Modifier produit
+                </div>
+                <div class="card-body">
+                {{form(form)}}
+                </div>
+                </div>     
+        </div>
+    </div>
+
+{% endblock %}
